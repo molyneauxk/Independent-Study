@@ -1,0 +1,51 @@
+#' @importFrom yaml yaml.load_file
+
+newrow <- function(element){
+  temp <- data.frame(Class=NA, Output=NA, CorrectAnswer=NA,
+                     AnswerChoices=NA, AnswerTests=NA, 
+                     Hint=NA, Figure=NA, FigureType=NA, 
+                     VideoLink=NA, Script=NA, 
+                     NumTimes = 1, TimesRepeated = 0, Token = NA,
+                     HintFunction = NA)
+  for(nm in names(element)){
+    # Only replace NA with value if value is not NULL, i.e. instructor
+    # provided a nonempty value
+    if(!is.null(element[[nm]])) {
+      temp[,nm] <- element[[nm]]
+    }
+  }
+  temp
+}
+
+
+library(yaml) 
+
+data <- yaml.load_file("C:/Users/joshy/Desktop/lesson.yaml")
+data
+
+temp <- lapply(data[-1], newrow)
+df <- NULL
+
+for(row in temp){
+  df <- rbind(df, row)
+}
+
+### df is now the correct table
+
+endline = "\n\n\n\n"
+x = df$Output
+
+
+x=paste("#<Q",1:length(x), ">", x, endline) #adds the hashtag sign along with question numbers
+
+
+write(x, file = "C:/Users/joshy/Desktop/test.R")
+
+data1 <- read.csv("C:/Users/joshy/Desktop/test.R", header = FALSE)
+data1
+
+#separating answers from responses
+
+keep = data1$V1[seq(2,length(data1)+1,2)]
+
+#takes out the answers but does not let me bind them into dataframe currently
